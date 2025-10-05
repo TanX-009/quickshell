@@ -35,8 +35,8 @@ Singleton {
         property string bluetooth: "blueberry"
         property string network: "nm-connection-editor"
         property string networkEthernet: "nm-connection-editor"
-        property string taskManager: "foot --title=btop btop"
-        property string terminal: "foot" // This is only for shell actions
+        property string taskManager: "kitty --title=btop btop"
+        property string terminal: "kitty" // This is only for shell actions
     }
 
     property QtObject background: QtObject {
