@@ -155,7 +155,7 @@ Singleton {
         property int normal: 6
         property int large: 8
         property int verylarge: 9
-        property int full: 9999
+        property int full: 10
         property int screenRounding: large
         property int windowRounding: 8
     }
