@@ -26,14 +26,14 @@ Item { // Bar content region
     }
 
     // Background shadow
-    Loader {
-        active: Config.options.bar.showBackground && Config.options.bar.cornerStyle === 1
-        anchors.fill: barBackground
-        sourceComponent: StyledRectangularShadow {
-            anchors.fill: undefined // The loader's anchors act on this, and this should not have any anchor
-            target: barBackground
-        }
-    }
+    // Loader {
+    //     active: Config.options.bar.showBackground && Config.options.bar.cornerStyle === 1
+    //     anchors.fill: barBackground
+    //     sourceComponent: StyledRectangularShadow {
+    //         anchors.fill: undefined // The loader's anchors act on this, and this should not have any anchor
+    //         target: barBackground
+    //     }
+    // }
     // Background
     Rectangle {
         id: barBackground
@@ -55,6 +55,7 @@ Item { // Bar content region
             bottom: parent.bottom
             left: parent.left
             right: middleSection.left
+            leftMargin: 10
         }
         implicitWidth: leftSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
@@ -80,9 +81,11 @@ Item { // Bar content region
         RowLayout {
             id: leftSectionRowLayout
             anchors.fill: parent
+            anchors.leftMargin: 8
             spacing: 10
 
-            LeftSidebarButton { // Left sidebar button
+            LeftSidebarButton {
+                // Left sidebar button
                 Layout.alignment: Qt.AlignVCenter
                 Layout.leftMargin: Appearance.rounding.screenRounding
                 colBackground: barLeftSideMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
@@ -193,6 +196,7 @@ Item { // Bar content region
             bottom: parent.bottom
             left: middleSection.right
             right: parent.right
+            rightMargin: 10
         }
         implicitWidth: rightSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
@@ -207,7 +211,7 @@ Item { // Bar content region
             const step = currentVolume < 0.1 ? 0.01 : 0.02 || 0.2;
             Audio.sink.audio.volume = Math.min(1, Audio.sink.audio.volume + step);
         }
-        onMovedAway: GlobalStates.osdVolumeOpen = false;
+        onMovedAway: GlobalStates.osdVolumeOpen = false
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
                 GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
@@ -227,6 +231,7 @@ Item { // Bar content region
         RowLayout {
             id: rightSectionRowLayout
             anchors.fill: parent
+            anchors.rightMargin: 8
             spacing: 5
             layoutDirection: Qt.RightToLeft
 
@@ -261,7 +266,7 @@ Item { // Bar content region
                 RowLayout {
                     id: indicatorsRowLayout
                     anchors.centerIn: parent
-                    property real realSpacing: 15
+                    property real realSpacing: 0
                     spacing: 0
 
                     Revealer {

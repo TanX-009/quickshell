@@ -7,7 +7,7 @@ Revealer { // Scroll hint
     property string icon
     property string side: "left"
     property string tooltipText: ""
-    
+
     MouseArea {
         id: mouseArea
         anchors.right: root.side === "left" ? parent.right : undefined

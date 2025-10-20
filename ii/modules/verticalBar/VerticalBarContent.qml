@@ -67,7 +67,8 @@ Item { // Bar content region
             anchors.fill: parent
             spacing: 10
 
-            Bar.LeftSidebarButton { // Left sidebar button
+            Bar.LeftSidebarButton {
+                // Left sidebar button
                 Layout.alignment: Qt.AlignHCenter
                 Layout.topMargin: (Appearance.sizes.baseVerticalBarWidth - implicitWidth) / 2 + Appearance.sizes.hyprlandGapsOut
                 colBackground: barTopSectionMouseArea.hovered ? Appearance.colors.colLayer1Hover : ColorUtils.transparentize(Appearance.colors.colLayer1Hover, 1)
@@ -76,7 +77,6 @@ Item { // Bar content region
             Item {
                 Layout.fillHeight: true
             }
-            
         }
     }
 
@@ -92,7 +92,7 @@ Item { // Bar content region
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
-            
+
             HorizontalBarSeparator {}
 
             VerticalMedia {
@@ -134,7 +134,7 @@ Item { // Bar content region
         Bar.BarGroup {
             vertical: true
             padding: 8
-            
+
             VerticalClockWidget {
                 Layout.fillWidth: true
                 Layout.fillHeight: false
@@ -156,7 +156,6 @@ Item { // Bar content region
                 Layout.fillWidth: true
                 Layout.fillHeight: false
             }
-            
         }
     }
 
@@ -167,10 +166,11 @@ Item { // Bar content region
             left: parent.left
             right: parent.right
             bottom: parent.bottom
+            bottomMargin: 4
         }
         implicitWidth: Appearance.sizes.baseVerticalBarWidth
         implicitHeight: bottomSectionColumnLayout.implicitHeight
-        
+
         onScrollDown: {
             const currentVolume = Audio.value;
             const step = currentVolume < 0.1 ? 0.01 : 0.02 || 0.2;
@@ -181,7 +181,7 @@ Item { // Bar content region
             const step = currentVolume < 0.1 ? 0.01 : 0.02 || 0.2;
             Audio.sink.audio.volume = Math.min(1, Audio.sink.audio.volume + step);
         }
-        onMovedAway: GlobalStates.osdVolumeOpen = false;
+        onMovedAway: GlobalStates.osdVolumeOpen = false
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
                 GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
@@ -193,9 +193,9 @@ Item { // Bar content region
             anchors.fill: parent
             spacing: 4
 
-            Item { 
+            Item {
                 Layout.fillWidth: true
-                Layout.fillHeight: true 
+                Layout.fillHeight: true
             }
 
             Bar.SysTray {
@@ -236,7 +236,7 @@ Item { // Bar content region
                 ColumnLayout {
                     id: indicatorsColumnLayout
                     anchors.centerIn: parent
-                    property real realSpacing: 6
+                    property real realSpacing: 0
                     spacing: 0
 
                     Revealer {
