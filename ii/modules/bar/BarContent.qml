@@ -267,7 +267,7 @@ Item { // Bar content region
                     id: indicatorsRowLayout
                     anchors.centerIn: parent
                     property real realSpacing: 0
-                    spacing: 0
+                    spacing: 10
 
                     Revealer {
                         reveal: Audio.sink?.audio?.muted ?? false
