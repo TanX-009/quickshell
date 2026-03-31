@@ -32,7 +32,7 @@ ContentPage {
         toggled: Appearance.m3colors.darkmode === dark
         colBackground: Appearance.colors.colLayer2
         onClicked: {
-            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
+            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"}`]);
         }
         contentItem: Item {
             anchors.centerIn: parent
@@ -125,7 +125,7 @@ ContentPage {
                         text: Translation.tr("Pick wallpaper image on your system")
                     }
                     onClicked: {
-                        Quickshell.execDetached(`${Directories.wallpaperSwitchScriptPath}`);
+                        Quickshell.execDetached([`${Directories.wallpaperSwitchScriptPath}`, "-s"]);
                     }
                     mainContentComponent: Component {
                         RowLayout {
@@ -176,7 +176,8 @@ ContentPage {
             currentValue: Config.options.appearance.palette.type
             onSelected: newValue => {
                 Config.options.appearance.palette.type = newValue;
-                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch`]);
+                // fix the palette selection by adding palette support to matugen wrapper
+                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} -s`]);
             }
             options: [
                 {

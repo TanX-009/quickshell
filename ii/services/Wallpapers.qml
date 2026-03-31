@@ -19,7 +19,7 @@ Singleton {
     property string generateThumbnailsMagickScriptPath: `${FileUtils.trimFileProtocol(Directories.scriptPath)}/thumbnails/generate-thumbnails-magick.sh`
     property alias directory: folderModel.folder
     readonly property string effectiveDirectory: FileUtils.trimFileProtocol(folderModel.folder.toString())
-    property url defaultFolder: Qt.resolvedUrl(`${Directories.pictures}/Wallpapers`)
+    property url defaultFolder: Qt.resolvedUrl(`${Directories.home}/.wallpapers`)
     property alias folderModel: folderModel // Expose for direct binding when needed
     property string searchQuery: ""
     readonly property list<string> extensions: [ // TODO: add videos
@@ -41,20 +41,14 @@ Singleton {
     }
     
     function openFallbackPicker(darkMode = Appearance.m3colors.darkmode) {
-        applyProc.exec([
-            Directories.wallpaperSwitchScriptPath,
-            "--mode", (darkMode ? "dark" : "light")
-        ])
+        applyProc.exec([Directories.wallpaperSwitchScriptPath, "-s"]);
     }
 
     function apply(path, darkMode = Appearance.m3colors.darkmode) {
-        if (!path || path.length === 0) return
-        applyProc.exec([
-            Directories.wallpaperSwitchScriptPath,
-            "--image", path,
-            "--mode", (darkMode ? "dark" : "light")
-        ])
-        root.changed()
+        if (!path || path.length === 0)
+            return;
+        applyProc.exec([Directories.wallpaperSwitchScriptPath, "--wallpaper", path, "--mode", (darkMode ? "dark" : "light")]);
+        root.changed();
     }
 
     Process {

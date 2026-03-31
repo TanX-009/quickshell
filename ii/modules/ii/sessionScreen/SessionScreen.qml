@@ -170,8 +170,8 @@ Scope {
 
                     SessionActionButton {
                         id: sessionHibernate
-                        buttonIcon: "downloading"
-                        buttonText: Translation.tr("Hibernate")
+                        buttonIcon: "window"
+                        buttonText: Translation.tr("Windows")
                         onClicked: {
                             Session.hibernate();
                             sessionRoot.hide();

@@ -15,28 +15,28 @@ Singleton {
     property string welcomeQmlPath: FileUtils.trimFileProtocol(Quickshell.shellPath("welcome.qml"))
 
     function load() {
-        firstRunFileView.reload()
+        firstRunFileView.reload();
     }
 
     function enableNextTime() {
-        Quickshell.execDetached(["rm", "-f", root.firstRunFilePath])
+        Quickshell.execDetached(["rm", "-f", root.firstRunFilePath]);
     }
     function disableNextTime() {
-        Quickshell.execDetached(["bash", "-c", `echo '${root.firstRunFileContent}' > '${root.firstRunFilePath}'`])
+        Quickshell.execDetached(["bash", "-c", `echo '${root.firstRunFileContent}' > '${root.firstRunFilePath}'`]);
     }
 
     function handleFirstRun() {
-        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, root.defaultWallpaperPath])
-        Quickshell.execDetached(["bash", "-c", `qs -p '${root.welcomeQmlPath}'`])
+        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "-w", root.defaultWallpaperPath, "-A"]);
+        Quickshell.execDetached(["bash", "-c", `qs -p '${root.welcomeQmlPath}'`]);
     }
 
     FileView {
         id: firstRunFileView
         path: Qt.resolvedUrl(firstRunFilePath)
-        onLoadFailed: (error) => {
+        onLoadFailed: error => {
             if (error == FileViewError.FileNotFound) {
-                firstRunFileView.setText(root.firstRunFileContent)
-                root.handleFirstRun()
+                firstRunFileView.setText(root.firstRunFileContent);
+                root.handleFirstRun();
             }
         }
     }

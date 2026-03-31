@@ -17,7 +17,7 @@ Singleton {
     }
 
     function lock() {
-        Quickshell.execDetached(["loginctl", "lock-session"]);
+        Quickshell.execDetached(["hyprlock"]);
     }
 
     function suspend() {
@@ -33,8 +33,8 @@ Singleton {
         Quickshell.execDetached(["bash", "-c", `${Config.options.apps.taskManager}`]);
     }
 
-    function hibernate() {
-        Quickshell.execDetached(["bash", "-c", `systemctl hibernate || loginctl hibernate`]);
+    function windows() {
+        Quickshell.execDetached(["bash", "-c", `systemctl reboot --boot-loader-entry=auto-windows`]);
     }
 
     function poweroff() {

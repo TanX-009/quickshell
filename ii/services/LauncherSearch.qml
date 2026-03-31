@@ -43,9 +43,9 @@ Singleton {
                 const actionName = fileName.replace(/\.[^/.]+$/, ""); // strip extension
                 actions.push({
                     action: actionName,
-                    execute: ((path) => (args) => {
-                        Quickshell.execDetached([path, ...(args ? args.split(" ") : [])]);
-                    })(FileUtils.trimFileProtocol(filePath.toString()))
+                    execute: (path => args => {
+                                Quickshell.execDetached([path, ...(args ? args.split(" ") : [])]);
+                            })(FileUtils.trimFileProtocol(filePath.toString()))
                 });
             }
         }
@@ -64,13 +64,13 @@ Singleton {
         {
             action: "accentcolor",
             execute: args => {
-                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch", "--color", ...(args != '' ? [`${args}`] : [])]);
+                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--color", ...(args != '' ? [`${args}`] : [])]);
             }
         },
         {
             action: "dark",
             execute: () => {
-                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark", "--noswitch"]);
+                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "dark"]);
             }
         },
         {
@@ -82,7 +82,7 @@ Singleton {
         {
             action: "light",
             execute: () => {
-                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light", "--noswitch"]);
+                Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light"]);
             }
         },
         {
