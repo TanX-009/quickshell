@@ -12,6 +12,10 @@ Singleton {
         });
     }
 
+    function changePassword() {
+        Quickshell.execDetached(["bash", "-c", `${Config.options.apps.changePassword}`]);
+    }
+
     function lock() {
         Quickshell.execDetached(["loginctl", "lock-session"]);
     }
@@ -29,8 +33,8 @@ Singleton {
         Quickshell.execDetached(["bash", "-c", `${Config.options.apps.taskManager}`]);
     }
 
-    function windows() {
-        Quickshell.execDetached(["bash", "-c", `systemctl reboot --boot-loader-entry=auto-windows`]);
+    function hibernate() {
+        Quickshell.execDetached(["bash", "-c", `systemctl hibernate || loginctl hibernate`]);
     }
 
     function poweroff() {

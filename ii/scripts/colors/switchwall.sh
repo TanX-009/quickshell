@@ -55,18 +55,8 @@ post_process() {
     local screen_height="$2"
     local wallpaper_path="$3"
 
-
     handle_kde_material_you_colors &
-
-    # Determine the largest region on the wallpaper that's sufficiently un-busy to put widgets in
-    # if [ ! -f "$MATUGEN_DIR/scripts/least_busy_region.py" ]; then
-    #     echo "Error: least_busy_region.py script not found in $MATUGEN_DIR/scripts/"
-    # else
-    #     "$MATUGEN_DIR/scripts/least_busy_region.py" \
-    #         --screen-width "$screen_width" --screen-height "$screen_height" \
-    #         --width 300 --height 200 \
-    #         "$wallpaper_path" > "$STATE_DIR"/user/generated/wallpaper/least_busy_region.json
-    # fi
+    "$SCRIPT_DIR/code/material-code-set-color.sh" &
 }
 
 check_and_prompt_upscale() {
@@ -165,6 +155,12 @@ set_thumbnail_path() {
     fi
 }
 
+categorize_wallpaper() {
+    img_cat=$("$SCRIPT_DIR/../ai/gemini-categorize-wallpaper.sh" "$1")
+    # notify-send "Wallpaper category" "$img_cat"
+    echo "$img_cat" > "$STATE_DIR/user/generated/wallpaper/category.txt"
+}
+
 switch() {
     imgpath="$1"
     mode_flag="$2"
@@ -173,9 +169,9 @@ switch() {
     color="$5"
 
     # Start Gemini auto-categorization if enabled
-    aiStylingEnabled=$(jq -r '.background.clock.cookie.aiStyling' "$SHELL_CONFIG_FILE")
+    aiStylingEnabled=$(jq -r '.background.widgets.clock.cookie.aiStyling' "$SHELL_CONFIG_FILE")
     if [[ "$aiStylingEnabled" == "true" ]]; then
-        "$SCRIPT_DIR/../ai/gemini-categorize-wallpaper.sh" "$imgpath" > "$STATE_DIR/user/generated/wallpaper/category.txt" &
+        categorize_wallpaper "$imgpath" &
     fi
 
     read scale screenx screeny screensizey < <(hyprctl monitors -j | jq '.[] | select(.focused) | .scale, .x, .y, .height' | xargs)
@@ -185,8 +181,10 @@ switch() {
     cursorposy=$(bc <<< "scale=0; ($cursorposy - $screeny) * $scale / 1")
     cursorposy_inverted=$((screensizey - cursorposy))
 
+    matugen_args=(--source-color-index 0)
+
     if [[ "$color_flag" == "1" ]]; then
-        matugen_args=(color hex "$color")
+        matugen_args+=(color hex "$color")
         generate_colors_material_args=(--color "$color")
     else
         if [[ -z "$imgpath" ]]; then
@@ -244,7 +242,7 @@ switch() {
             set_thumbnail_path "$thumbnail"
 
             if [ -f "$thumbnail" ]; then
-                matugen_args=(image "$thumbnail")
+                matugen_args+=(image "$thumbnail")
                 generate_colors_material_args=(--path "$thumbnail")
                 create_restore_script "$video_path"
             else
@@ -253,7 +251,7 @@ switch() {
                 exit 1
             fi
         else
-            matugen_args=(image "$imgpath")
+            matugen_args+=(image "$imgpath")
             generate_colors_material_args=(--path "$imgpath")
             # Update wallpaper path in config
             set_wallpaper_path "$imgpath"
@@ -329,6 +327,13 @@ main() {
     get_type_from_config() {
         jq -r '.appearance.palette.type' "$SHELL_CONFIG_FILE" 2>/dev/null || echo "auto"
     }
+    get_accent_color_from_config() {
+        jq -r '.appearance.palette.accentColor' "$SHELL_CONFIG_FILE" 2>/dev/null || echo ""
+    }
+    set_accent_color() {
+        local color="$1"
+        jq --arg color "$color" '.appearance.palette.accentColor = $color' "$SHELL_CONFIG_FILE" > "$SHELL_CONFIG_FILE.tmp" && mv "$SHELL_CONFIG_FILE.tmp" "$SHELL_CONFIG_FILE"
+    }
 
     detect_scheme_type_from_image() {
         local img="$1"
@@ -348,12 +353,14 @@ main() {
                 shift 2
                 ;;
             --color)
-                color_flag="1"
                 if [[ "$2" =~ ^#?[A-Fa-f0-9]{6}$ ]]; then
-                    color="$2"
+                    set_accent_color "$2"
+                    shift 2
+                elif [[ "$2" == "clear" ]]; then
+                    set_accent_color ""
                     shift 2
                 else
-                    color=$(hyprpicker --no-fancy)
+                    set_accent_color $(hyprpicker --no-fancy)
                     shift
                 fi
                 ;;
@@ -374,6 +381,13 @@ main() {
                 ;;
         esac
     done
+
+    # If accentColor is set in config, use it
+    config_color="$(get_accent_color_from_config)"
+    if [[ "$config_color" =~ ^#?[A-Fa-f0-9]{6}$ ]]; then
+        color_flag="1"
+        color="$config_color"
+    fi
 
     # If type_flag is not set, get it from config
     if [[ -z "$type_flag" ]]; then
@@ -398,6 +412,12 @@ main() {
     if [[ -z "$imgpath" && -z "$color_flag" && -z "$noswitch_flag" ]]; then
         cd "$(xdg-user-dir PICTURES)/Wallpapers/showcase" 2>/dev/null || cd "$(xdg-user-dir PICTURES)/Wallpapers" 2>/dev/null || cd "$(xdg-user-dir PICTURES)" || return 1
         imgpath="$(kdialog --getopenfilename . --title 'Choose wallpaper')"
+    fi
+
+    if [[ -n "$imgpath" && -z "$noswitch_flag" ]]; then
+        set_accent_color ""
+        color_flag=""
+        color=""
     fi
 
     # If type_flag is 'auto', detect scheme type from image (after imgpath is set)

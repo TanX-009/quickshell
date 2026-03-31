@@ -32,7 +32,7 @@ ApplicationWindow {
 
     Component.onCompleted: {
         MaterialThemeLoader.reapplyTheme();
-        Config.readWriteDelay = 0; // Welcome app always only sets one var at a time so delay isn't needed
+        Config.readWriteDelay = 0 // Welcome app always only sets one var at a time so delay isn't needed
     }
 
     minimumWidth: 600
@@ -80,8 +80,11 @@ ApplicationWindow {
                 }
                 color: Appearance.colors.colOnLayer0
                 text: Translation.tr("Hi there! First things first...")
-                font.pixelSize: Appearance.font.pixelSize.title
-                font.family: Appearance.font.family.title
+                font {
+                    family: Appearance.font.family.title
+                    pixelSize: Appearance.font.pixelSize.title
+                    variableAxes: Appearance.font.variableAxes.title
+                }
             }
             RowLayout { // Window controls row
                 id: windowControlsRow
@@ -170,7 +173,7 @@ ApplicationWindow {
 
                     ContentSubsection {
                         title: Translation.tr("Generate translation with Gemini")
-
+                        
                         ConfigRow {
                             MaterialTextArea {
                                 id: localeInput
@@ -298,7 +301,7 @@ ApplicationWindow {
                                 text: Translation.tr("Pick wallpaper image on your system")
                             }
                             onClicked: {
-                                Quickshell.execDetached([`${Directories.wallpaperSwitchScriptPath}`, "-s"]);
+                                Quickshell.execDetached([`${Directories.wallpaperSwitchScriptPath}`]);
                             }
                             mainContentComponent: Component {
                                 RowLayout {

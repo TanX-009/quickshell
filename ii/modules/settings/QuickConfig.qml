@@ -32,7 +32,7 @@ ContentPage {
         toggled: Appearance.m3colors.darkmode === dark
         colBackground: Appearance.colors.colLayer2
         onClicked: {
-            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"}`]);
+            Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --mode ${dark ? "dark" : "light"} --noswitch`]);
         }
         contentItem: Item {
             anchors.centerIn: parent
@@ -67,7 +67,7 @@ ContentPage {
             Item {
                 implicitWidth: 340
                 implicitHeight: 200
-
+                
                 StyledImage {
                     id: wallpaperPreview
                     anchors.fill: parent
@@ -125,7 +125,7 @@ ContentPage {
                         text: Translation.tr("Pick wallpaper image on your system")
                     }
                     onClicked: {
-                        Quickshell.execDetached([`${Directories.wallpaperSwitchScriptPath}`, "-s"]);
+                        Quickshell.execDetached(`${Directories.wallpaperSwitchScriptPath}`);
                     }
                     mainContentComponent: Component {
                         RowLayout {
@@ -141,7 +141,7 @@ ContentPage {
                                     key: "Ctrl"
                                 }
                                 KeyboardKey {
-                                    key: "󰖳"
+                                    key: Config.options.cheatsheet.superKey ?? "󰖳"
                                 }
                                 StyledText {
                                     Layout.alignment: Qt.AlignVCenter
@@ -176,8 +176,7 @@ ContentPage {
             currentValue: Config.options.appearance.palette.type
             onSelected: newValue => {
                 Config.options.appearance.palette.type = newValue;
-                // fix the palette selection by adding palette support to matugen wrapper
-                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} -s`]);
+                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} --noswitch`]);
             }
             options: [
                 {
@@ -225,9 +224,6 @@ ContentPage {
             checked: Config.options.appearance.transparency.enable
             onCheckedChanged: {
                 Config.options.appearance.transparency.enable = checked;
-            }
-            StyledToolTip {
-                text: Translation.tr("Might look ass. Unsupported.")
             }
         }
     }
@@ -326,11 +322,40 @@ ContentPage {
                     ]
                 }
             }
+            
         }
     }
 
     NoticeBox {
         Layout.fillWidth: true
         text: Translation.tr('Not all options are available in this app. You should also check the config file by hitting the "Config file" button on the topleft corner or opening %1 manually.').arg(Directories.shellConfigPath)
+
+        Item {
+            Layout.fillWidth: true
+        }
+        RippleButtonWithIcon {
+            id: copyPathButton
+            property bool justCopied: false
+            Layout.fillWidth: false
+            buttonRadius: Appearance.rounding.small
+            materialIcon: justCopied ? "check" : "content_copy"
+            mainText: justCopied ? Translation.tr("Path copied") : Translation.tr("Copy path")
+            onClicked: {
+                copyPathButton.justCopied = true
+                Quickshell.clipboardText = FileUtils.trimFileProtocol(`${Directories.config}/illogical-impulse/config.json`);
+                revertTextTimer.restart();
+            }
+            colBackground: ColorUtils.transparentize(Appearance.colors.colPrimaryContainer)
+            colBackgroundHover: Appearance.colors.colPrimaryContainerHover
+            colRipple: Appearance.colors.colPrimaryContainerActive
+
+            Timer {
+                id: revertTextTimer
+                interval: 1500
+                onTriggered: {
+                    copyPathButton.justCopied = false
+                }
+            }
+        }
     }
 }
