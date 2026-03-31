@@ -50,8 +50,7 @@ Scope {
 
     Process {
         id: detectPackageManagerProc
-        command: ["pidof", "pacman", "yay", "paru", "dnf", "zypper", "apt", "apx", "xbps", "flatpak", "snap", "apk",
-            "yum", "epsi", "pikman"]
+        command: ["pidof", "pacman", "yay", "paru", "dnf", "zypper", "apt", "apx", "xbps", "flatpak", "snap", "apk", "yum", "epsi", "pikman"]
         onExited: (exitCode, exitStatus) => {
             root.packageManagerRunning = (exitCode === 0);
         }
@@ -69,7 +68,8 @@ Scope {
         id: sessionLoader
         active: GlobalStates.sessionOpen
         onActiveChanged: {
-            if (sessionLoader.active) root.detectRunningStuff();
+            if (sessionLoader.active)
+                root.detectRunningStuff();
         }
 
         Connections {
@@ -85,7 +85,7 @@ Scope {
             id: sessionRoot
             visible: sessionLoader.active
             property string subtitle
-            
+
             function hide() {
                 GlobalStates.sessionOpen = false;
             }
@@ -109,7 +109,7 @@ Scope {
                 id: sessionMouseArea
                 anchors.fill: parent
                 onClicked: {
-                    sessionRoot.hide()
+                    sessionRoot.hide();
                 }
             }
 
@@ -118,7 +118,7 @@ Scope {
                 anchors.centerIn: parent
                 spacing: 15
 
-                Keys.onPressed: (event) => {
+                Keys.onPressed: event => {
                     if (event.key === Qt.Key_Escape) {
                         sessionRoot.hide();
                     }
@@ -127,7 +127,8 @@ Scope {
                 ColumnLayout {
                     Layout.alignment: Qt.AlignHCenter
                     spacing: 0
-                    StyledText { // Title
+                    StyledText {
+                        // Title
                         Layout.alignment: Qt.AlignHCenter
                         horizontalAlignment: Text.AlignHCenter
                         font.family: Appearance.font.family.title
@@ -136,7 +137,8 @@ Scope {
                         text: Translation.tr("Session")
                     }
 
-                    StyledText { // Small instruction
+                    StyledText {
+                        // Small instruction
                         Layout.alignment: Qt.AlignHCenter
                         horizontalAlignment: Text.AlignHCenter
                         font.pixelSize: Appearance.font.pixelSize.normal
@@ -154,17 +156,29 @@ Scope {
                         focus: sessionRoot.visible
                         buttonIcon: "lock"
                         buttonText: Translation.tr("Lock")
-                        onClicked:  { Session.lock(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        onClicked: {
+                            Session.lock();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.right: sessionSleep
-                        KeyNavigation.down: sessionHibernate
+                        KeyNavigation.down: sessionWindows
                     }
                     SessionActionButton {
                         id: sessionSleep
                         buttonIcon: "dark_mode"
                         buttonText: Translation.tr("Sleep")
-                        onClicked:  { Session.suspend(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        onClicked: {
+                            Session.suspend();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.left: sessionLock
                         KeyNavigation.right: sessionLogout
                         KeyNavigation.down: sessionShutdown
@@ -173,8 +187,14 @@ Scope {
                         id: sessionLogout
                         buttonIcon: "logout"
                         buttonText: Translation.tr("Logout")
-                        onClicked: { Session.logout(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        onClicked: {
+                            Session.logout();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.left: sessionSleep
                         KeyNavigation.right: sessionTaskManager
                         KeyNavigation.down: sessionReboot
@@ -183,18 +203,30 @@ Scope {
                         id: sessionTaskManager
                         buttonIcon: "browse_activity"
                         buttonText: Translation.tr("Task Manager")
-                        onClicked:  { Session.launchTaskManager(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        onClicked: {
+                            Session.launchTaskManager();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.left: sessionLogout
                         KeyNavigation.down: sessionFirmwareReboot
                     }
 
                     SessionActionButton {
-                        id: sessionHibernate
-                        buttonIcon: "downloading"
-                        buttonText: Translation.tr("Hibernate")
-                        onClicked:  { Session.hibernate(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        id: sessionWindows
+                        buttonIcon: "windows"
+                        buttonText: Translation.tr("Windows")
+                        onClicked: {
+                            Session.windows();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.up: sessionLock
                         KeyNavigation.right: sessionShutdown
                     }
@@ -202,9 +234,15 @@ Scope {
                         id: sessionShutdown
                         buttonIcon: "power_settings_new"
                         buttonText: Translation.tr("Shutdown")
-                        onClicked:  { Session.poweroff(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
-                        KeyNavigation.left: sessionHibernate
+                        onClicked: {
+                            Session.poweroff();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
+                        KeyNavigation.left: sessionWindows
                         KeyNavigation.right: sessionReboot
                         KeyNavigation.up: sessionSleep
                     }
@@ -212,8 +250,14 @@ Scope {
                         id: sessionReboot
                         buttonIcon: "restart_alt"
                         buttonText: Translation.tr("Reboot")
-                        onClicked:  { Session.reboot(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        onClicked: {
+                            Session.reboot();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.left: sessionShutdown
                         KeyNavigation.right: sessionFirmwareReboot
                         KeyNavigation.up: sessionLogout
@@ -222,8 +266,14 @@ Scope {
                         id: sessionFirmwareReboot
                         buttonIcon: "settings_applications"
                         buttonText: Translation.tr("Reboot to firmware settings")
-                        onClicked:  { Session.rebootToFirmware(); sessionRoot.hide() }
-                        onFocusChanged: { if (focus) sessionRoot.subtitle = buttonText }
+                        onClicked: {
+                            Session.rebootToFirmware();
+                            sessionRoot.hide();
+                        }
+                        onFocusChanged: {
+                            if (focus)
+                                sessionRoot.subtitle = buttonText;
+                        }
                         KeyNavigation.up: sessionTaskManager
                         KeyNavigation.left: sessionReboot
                     }
@@ -273,11 +323,11 @@ Scope {
         }
 
         function close(): void {
-            GlobalStates.sessionOpen = false
+            GlobalStates.sessionOpen = false;
         }
 
         function open(): void {
-            GlobalStates.sessionOpen = true
+            GlobalStates.sessionOpen = true;
         }
     }
 
@@ -295,7 +345,7 @@ Scope {
         description: "Opens session screen on press"
 
         onPressed: {
-            GlobalStates.sessionOpen = true
+            GlobalStates.sessionOpen = true;
         }
     }
 
@@ -304,8 +354,7 @@ Scope {
         description: "Closes session screen on press"
 
         onPressed: {
-            GlobalStates.sessionOpen = false
+            GlobalStates.sessionOpen = false;
         }
     }
-
 }

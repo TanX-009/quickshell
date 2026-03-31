@@ -107,6 +107,7 @@
   "Fruit Salad": "Fruit Salad",
   "%1 Safe Storage": "%1 Safe Storage",
   "Hibernate": "Hibernate",
+  "Windows": "Windows",
   "Delete": "Delete",
   "OK": "OK",
   "Settings": "Settings",
@@ -513,3 +514,4 @@
   "but force at absolute corner": "but force at absolute corner",
   "When the previous option is off and this is on,\nyou can still hover the corner's end to open sidebar,\nand the remaining area can be used for volume/brightness scroll": "When the previous option is off and this is on,\nyou can still hover the corner's end to open sidebar,\nand the remaining area can be used for volume/brightness scroll"
 }
+
