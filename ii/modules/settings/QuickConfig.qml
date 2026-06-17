@@ -71,8 +71,6 @@ ContentPage {
                 StyledImage {
                     id: wallpaperPreview
                     anchors.fill: parent
-                    sourceSize.width: parent.implicitWidth
-                    sourceSize.height: parent.implicitHeight
                     fillMode: Image.PreserveAspectCrop
                     source: Config.options.background.wallpaperPath
                     cache: false
@@ -177,7 +175,7 @@ ContentPage {
             onSelected: newValue => {
                 Config.options.appearance.palette.type = newValue;
                 // fix the palette selection by adding palette support to matugen wrapper
-                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} -s`]);
+                Quickshell.execDetached(["bash", "-c", `${Directories.wallpaperSwitchScriptPath} -t ${newValue === "auto" ? "scheme-tonal-spot" : newValue}`]);
             }
             options: [
                 {

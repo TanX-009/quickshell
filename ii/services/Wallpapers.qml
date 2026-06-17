@@ -34,21 +34,15 @@ Singleton {
     signal thumbnailGeneratedFile(filePath: string)
 
     function load () {} // For forcing initialization
-
-    // Executions
-    Process {
-        id: applyProc
-    }
     
     function openFallbackPicker(darkMode = Appearance.m3colors.darkmode) {
-        applyProc.exec([Directories.wallpaperSwitchScriptPath, "-s"]);
+        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", darkMode ? "dark" : "light"]);
     }
 
     function apply(path, darkMode = Appearance.m3colors.darkmode) {
-        if (!path || path.length === 0)
-            return;
-        applyProc.exec([Directories.wallpaperSwitchScriptPath, "--wallpaper", path, "--mode", (darkMode ? "dark" : "light")]);
-        root.changed();
+        if (!path || path.length === 0) return;
+        Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--wallpaper", path, "--mode", darkMode ? "dark" : "light"]);
+        root.changed()
     }
 
     Process {

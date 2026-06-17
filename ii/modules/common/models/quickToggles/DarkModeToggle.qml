@@ -12,7 +12,7 @@ QuickToggleModel {
 
     toggled: Appearance.m3colors.darkmode
     icon: "contrast"
-
+    
     mainAction: () => {
         if (Appearance.m3colors.darkmode) {
             Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--mode", "light"]);

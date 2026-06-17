@@ -7,6 +7,7 @@ import QtQuick
 import Qt.labs.folderlistmodel
 import Quickshell
 import Quickshell.Io
+import Quickshell.Hyprland
 
 Singleton {
     id: root
@@ -43,9 +44,9 @@ Singleton {
                 const actionName = fileName.replace(/\.[^/.]+$/, ""); // strip extension
                 actions.push({
                     action: actionName,
-                    execute: (path => args => {
-                                Quickshell.execDetached([path, ...(args ? args.split(" ") : [])]);
-                            })(FileUtils.trimFileProtocol(filePath.toString()))
+                    execute: ((path) => (args) => {
+                        Quickshell.execDetached([path, ...(args ? args.split(" ") : [])]);
+                    })(FileUtils.trimFileProtocol(filePath.toString()))
                 });
             }
         }
@@ -108,7 +109,7 @@ Singleton {
         {
             action: "wallpaper",
             execute: () => {
-                GlobalStates.wallpaperSelectorOpen = true;
+                Hyprland.dispatch(`hl.dsp.global("quickshell:wallpaperSelectorToggle")`)
             }
         },
         {

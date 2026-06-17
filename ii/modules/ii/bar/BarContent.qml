@@ -55,7 +55,10 @@ Item { // Bar content region
             bottom: parent.bottom
             left: parent.left
             right: middleSection.left
-            leftMargin: 10
+            leftMargin: barLeftSideMouseArea.hovered ? 10 : 0
+        }
+        Behavior on anchors.leftMargin {
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
         }
         implicitWidth: leftSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
@@ -70,6 +73,7 @@ Item { // Bar content region
 
         // Visual content
         ScrollHint {
+            id: barLeftSideScrollHint
             reveal: barLeftSideMouseArea.hovered
             icon: Hyprsunset.gamma === 100 ? "light_mode" : "wb_twilight"
             tooltipText: Translation.tr("Scroll to change brightness")
@@ -82,6 +86,12 @@ Item { // Bar content region
             id: leftSectionRowLayout
             anchors.fill: parent
             spacing: 0
+            anchors.left: scrollHintIcon.right 
+            anchors.leftMargin: barLeftSideMouseArea.hovered ? 10 : 0
+
+            Behavior on anchors.leftMargin {
+                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+            }
 
             LeftSidebarButton { // Left sidebar button
                 id: leftSidebarButton
@@ -196,14 +206,19 @@ Item { // Bar content region
             bottom: parent.bottom
             left: middleSection.right
             right: parent.right
-            rightMargin: 10
+            rightMargin: barRightSideMouseArea.hovered ? 10 : 0
         }
+
+        Behavior on anchors.rightMargin {
+            animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+        }
+            
         implicitWidth: rightSectionRowLayout.implicitWidth
         implicitHeight: Appearance.sizes.baseBarHeight
 
-        onScrollDown: Audio.decrementVolume()
-        onScrollUp: Audio.incrementVolume()
-        onMovedAway: GlobalStates.osdVolumeOpen = false
+        onScrollDown: Audio.decrementVolume();
+        onScrollUp: Audio.incrementVolume();
+        onMovedAway: GlobalStates.osdVolumeOpen = false;
         onPressed: event => {
             if (event.button === Qt.LeftButton) {
                 GlobalStates.sidebarRightOpen = !GlobalStates.sidebarRightOpen;
@@ -212,6 +227,7 @@ Item { // Bar content region
 
         // Visual content
         ScrollHint {
+            id: barRightSideScrollHint
             reveal: barRightSideMouseArea.hovered
             icon: "volume_up"
             tooltipText: Translation.tr("Scroll to change volume")
@@ -225,6 +241,12 @@ Item { // Bar content region
             anchors.fill: parent
             spacing: 5
             layoutDirection: Qt.RightToLeft
+            anchors.right: scrollHintIcon.left 
+            anchors.rightMargin: barRightSideMouseArea.hovered ? 10 : 0
+
+            Behavior on anchors.rightMargin {
+                animation: Appearance.animation.elementMoveFast.numberAnimation.createObject(this)
+            }
 
             RippleButton { // Right sidebar button
                 id: rightSidebarButton
